@@ -4,6 +4,7 @@ from numpy import *
 maxiter = 1000
 maxiter2 = maxiter
 
+
 def computeQUI_numpy(PXgSa, PYgSa, PS, eps = 1e-7, DEBUG = False, IPmethod = "IS"):
     # print(PXgSa)
     # print(PYgSa)
@@ -14,15 +15,16 @@ def computeQUI_numpy(PXgSa, PYgSa, PS, eps = 1e-7, DEBUG = False, IPmethod = "IS
 #    nSXY = nS * nX * nY
     rangeS = range(nS)
 
-    #############  Start the loop
     eps2 = eps / (20 * nS)
 
-    # start with a full support
+    ### Start with a full support
     RXYa = 1e-6 * numpy.ones((nX, nY)) / nXY + (1 - 1e-6) * numpy.outer(numpy.dot(PXgSa, PS), numpy.dot(PYgSa, PS))
     QXYgSa = numpy.zeros((nX, nY, nS))
+
+    ### Start the loop
     for it in range(maxiter):
         diff = 1.
-        ##### Step 1
+        ### Step 1
         for s in rangeS:
             # print(s, ":")
             # b is zero if PXgSa[x, s] == 0 or PXgSa[y, s] == 0
@@ -40,8 +42,10 @@ def computeQUI_numpy(PXgSa, PYgSa, PS, eps = 1e-7, DEBUG = False, IPmethod = "IS
 
             QXYgSa[numpy.outer(xindices, yindices), s] = Ip
 
-        ##### Step 2
+        ### Step 2
         RXYa = numpy.dot(QXYgSa.reshape(nXY, nS), PS).reshape(nX, nY)
+
+        ### Stopping criterion
         if (diff - 1. < eps):
             break
         # else:
@@ -113,6 +117,7 @@ def Iproj_tech_GIS(PXgsa, PYgsa, RXYa, eps = 1e-9, DEBUG = False):
     # if DEBUG:
     #     print("it2: ", it2)
     return b, xindices, yindices
+
 
 def Iproj_tech_IS(PXgsa, PYgsa, RXYa, eps = 1e-9, DEBUG = False):
     '''
